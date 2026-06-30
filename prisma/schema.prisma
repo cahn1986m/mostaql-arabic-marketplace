@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  password        String
+  role            String    @default("CLIENT")
+  avatar          String?
+  bio             String?
+  title           String?
+  country         String?
+  rating          Float     @default(0)
+  isOnline        Boolean   @default(false)
+  verified        Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  projects        Project[] @relation("UserProjects")
+  proposals       Proposal[] @relation("UserProposals")
+  portfolios      Portfolio[]
+  reviewsGiven    Review[]  @relation("ReviewGiver")
+  reviewsReceived Review[]  @relation("ReviewReceiver")
+}
+
+model Project {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  category    String
+  skills      String
+  budgetMin   Float
+  budgetMax   Float
+  duration    String
+  status      String    @default("OPEN")
+  createdAt   DateTime  @default(now())
+  author      User      @relation(fields: [authorId], references: [id], name: "UserProjects")
+  authorId    String
+  proposals   Proposal[]
+}
+
+model Proposal {
+  id           String   @id @default(cuid())
+  amount       Float
+  duration     String
+  coverLetter  String
+  status       String   @default("PENDING")
+  createdAt    DateTime @default(now())
+  project      Project  @relation(fields: [projectId], references: [id])
+  projectId    String
+  freelancer   User     @relation(fields: [freelancerId], references: [id], name: "UserProposals")
+  freelancerId String
+}
+
+model Portfolio {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  image       String?
+  likes       Int       @default(0)
+  category    String
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  rating      Int
+  comment     String
+  createdAt   DateTime @default(now())
+  giver       User     @relation("ReviewGiver", fields: [giverId], references: [id])
+  giverId     String
+  receiver    User     @relation("ReviewReceiver", fields: [receiverId], references: [id])
+  receiverId  String
+}

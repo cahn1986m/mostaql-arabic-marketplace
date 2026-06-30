@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  font-family: 'Cairo', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #FFFFFF;
+  color: #1F2937;
+  min-height: 100vh;
+}
+
+a {
+  color: #1B6FC8;
+}
+
+::selection {
+  background: #1B6FC8;
+  color: white;
+}
